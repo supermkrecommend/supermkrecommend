@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.supermarketdiscount.dao.DiscountStandardMapper">
+    <cache/>
+    <sql id="commonConlumns">
+                salsePriceid as salsePriceid,
+                commodityid as commodityid,
+                promotionstandard as promotionstandard,
+                salse as salse,
+                minCount as minCount,
+                maxCount as maxCount,
+                alteramount as alterAmount
+        </sql>
+    <sql id="daynamicWhere">
+        <where>
+            <if test="salsePriceid != null">
+                and salsePriceid = #{salsePriceid,jdbcType = INTEGER}
+            </if>
+            <if test="commodityid != null">
+                and commodityid = #{commodityid,jdbcType = INTEGER}
+            </if>
+            <if test="promotionstandard != null">
+                and promotionstandard = #{promotionstandard,jdbcType = SMALLINT}
+            </if>
+            <if test="salse != null">
+                and salse = #{salse,jdbcType = DOUBLE}
+            </if>
+            <if test="minCount != null">
+                and minCount = #{minCount,jdbcType = SMALLINT}
+            </if>
+            <if test="maxCont != null">
+                and maxCount = #{maxCount,jdbcType = SMALLINT}
+            </if>
+            <if test="alterAmount != null">
+                and alteramount = #{alterAmount,jdbcType = SMALLINT}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getDiscountStandardList" parameterType="java.util.Map"
+            resultType="org.supermarketdiscount.entity.DiscountStandard">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM discountstandard
+        <include refid="daynamicWhere"/>
+    </select>
+
+    <select id="getDiscountStandard" parameterType="java.util.Map"
+            resultType="org.supermarketdiscount.entity.DiscountStandard">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM discountstandard
+        <include refid="daynamicWhere"/>
+    </select>
+
+    <select id="getMaxUuid" resultType="long">
+            select max(salsePriceid)+1 from discountstandard;
+        </select>
+
+    <insert id="add" parameterType="org.supermarketdiscount.entity.DiscountStandard">
+                <![CDATA[
+                insert into discountstandard(
+                     salsePriceid,
+                     commodityid,
+                     promotionstandard,
+                     salse,
+                     minCount,
+                     maxCount,
+                     alteramount
+                ) values(
+                    #{salsePriceid,jdbcType = INTEGER},
+                    #{commodityid,jdbcType = INTEGER},
+                    #{promotionstandard,jdbcType = SMALLINT},
+                    #{salse,jdbcType = DOUBLE},
+                    #{minCount,jdbcType = SMALLINT},
+                    #{maxCount,jdbcType = SMALLINT},
+                    #{alterAmount,jdbcType = SMALLINT}
+                );
+
+
+
+
+
+        ]]>
+        </insert>
+
+    <update id="update" parameterType="org.supermarketdiscount.entity.DiscountStandard">
+                <![CDATA[
+                        update discountstandard set
+                            salsePriceid = #{salsePriceid,jdbcType = INTEGER},
+                            salse =#{salse,jdbcType = DOUBLE},
+                            minCount = #{minCount,jdbcType = SMALLINT},
+                            maxCount =#{maxCount,jdbcType = SMALLINT},
+                            alteramount = #{alterAmount,jdbcType = SMALLINT}
+                        where
+                            commodityid = #{commodityid,jdbcType = INTEGER} and
+                            promotionstandard =#{promotionstandard,jdbcType = SMALLINT};
+        ]]>
+        </update>
+    <delete id="del" parameterType="org.supermarketdiscount.entity.DiscountStandard">
+                <![CDATA[
+                        delete from discountstandard where
+                           commodityid = #{commodityid,jdbcType = INTEGER} and
+                           promotionstandard =#{promotionstandard,jdbcType = SMALLINT};
+        ]]>
+        </delete>
+    <delete id="delByCommodityid" parameterType="org.supermarketdiscount.entity.DiscountStandard">
+        <![CDATA[
+         delete from discountstandard where
+                           commodityid = #{commodityid,jdbcType = INTEGER};
+        ]]>
+    </delete>
+</mapper>

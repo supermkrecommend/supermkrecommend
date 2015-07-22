@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.supermarketdiscount.dao.PurchaseHistoryMapper">
+    <cache/>
+    <sql id="commonConlumns">
+                purchaseid as purchaseid,
+                serialNumber as serialNumber,
+                userid as userid,
+                storeNumber as storeNumberm,
+                shortDate as shortDate,
+                commodityid as commodityid,
+                counts as counts,
+                salsePrice as salsePrice,
+                countPrice as countPrice
+        </sql>
+    <sql id="daynamicWhere">
+        <where>
+            <if test="purchaseid != null">
+                and purchaseid = #{purchaseid,jdbcType = INTEGER}
+            </if>
+            <if test="serialNumber != null">
+                and serialNumber = #{serialNumber,jdbcType = INTEGER}
+            </if>
+            <if test="userid != null">
+                and userid = #{userid,jdbcType = INTEGER}
+            </if>
+            <if test="storeNumber != null">
+                and storeNumber = #{storeNumber,jdbcType = SMALLINT}
+            </if>
+            <if test="shortDate != null">
+                and shortDate = #{shortDate,jdbcType = TIMESTAMP}
+            </if>
+            <if test="commodityid != null">
+                and commodityid = #{commodityid,jdbcType = INTEGER}
+            </if>
+            <if test="counts != null">
+                and counts = #{counts,jdbcType = DOUBLE}
+            </if>
+            <if test="salsePrice != null">
+                and salsePrice = #{salsePrice,jdbcType = DOUBLE}
+            </if>
+            <if test="countPrice != null">
+                and countPrice = #{countPrice,jdbcType = DOUBLE}
+            </if>
+        </where>
+    </sql>
+    <select id="getPurchaseHistoryList" parameterType="java.util.Map"
+            resultType="org.supermarketdiscount.entity.PurchaseHistory">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM purchasehistory
+        <include refid="daynamicWhere"/>
+    </select>
+    <select id="getNextSerialNumber" resultType="long">
+        select max(serialNumber)+1 from purchasehistory;
+    </select>
+    <select id="getConsumeDay" parameterType="java.util.Map" resultType="java.lang.Double">
+        SELECT datediff(max(shortdate) , min(shortdate))/sum(counts) FROM purchasehistory
+         WHERE
+            userid = #{userid,jdbcType = INTEGER} and
+            commodityid = #{commodityid,jdbcType = INTEGER}
+    </select>
+
+    <select id="getPurchaseHistory" parameterType="java.util.Map"
+            resultType="org.supermarketdiscount.entity.PurchaseHistory">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM purchasehistory
+        <include refid="daynamicWhere"/>
+    </select>
+    <insert id="add" parameterType="org.supermarketdiscount.entity.PurchaseHistory">
+                <![CDATA[
+                insert into purchasehistory(
+                   serialNumber,
+                   userid,
+                   storeNumber,
+                   shortDate,
+                   commodityid,
+                   counts,
+                   salsePrice,
+                   countPrice
+                ) values(
+                     #{serialNumber,jdbcType = INTEGER},
+                     #{userid,jdbcType = INTEGER},
+                     #{storeNumber,jdbcType = SMALLINT},
+                     #{shortDate,jdbcType = TIMESTAMP},
+                     #{commodityid,jdbcType = INTEGER},
+                     #{counts,jdbcType = DOUBLE},
+                     #{salsePrice,jdbcType = DOUBLE},
+                     #{countPrice,jdbcType = DOUBLE}
+                );
+        ]]>
+        </insert>
+
+    <update id="update" parameterType="org.supermarketdiscount.entity.PurchaseHistory">
+                <![CDATA[
+                        update purchasehistory set
+                            serialNumber = #{serialNumber,jdbcType = INTEGER},
+                            storeNumber = #{storeNumber,jdbcType = SMALLINT},
+                            userid = #{userid,jdbcType = INTEGER},
+                            shortDate = #{shortDate,jdbcType = TIMESTAMP},
+                            commodityid = #{commodityid,jdbcType = INTEGER},
+                            counts = #{counts,jdbcType = DOUBLE},
+                            salsePrice = #{salsePrice,jdbcType = DOUBLE},
+                            countPrice = #{countPrice,jdbcType = DOUBLE}
+                        where
+                            purchaseid = #{purchaseid,jdbcType = INTEGER};
+        ]]>
+        </update>
+    <delete id="del" parameterType="org.supermarketdiscount.entity.PurchaseHistory">
+                <![CDATA[
+
+                        delete from purchasehistory where
+                           purchaseid = #{purchaseid,jdbcType = INTEGER};
+
+        ]]>
+        </delete>
+</mapper>

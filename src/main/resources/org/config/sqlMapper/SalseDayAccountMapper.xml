@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.supermarketdiscount.dao.SalseDayAccountMapper">
+    <cache/>
+    <sql id="commonConlumns">
+        purchaseDate as purchaseDate,
+        commodityid as commodityid,
+        salseCount as salseCount,
+        profit as profit
+    </sql>
+    <sql id="daynamicWhere">
+        <where>
+            <if test="purchaseDate != null">
+                and purchaseDate = #{purchaseDate,jdbcType = INTEGER}
+            </if>
+            <if test="commodityid != null">
+                and commodityid = #{commodityid,jdbcType = VARCHAR}
+            </if>
+            <if test="salseCount != null">
+                and salseCount = #{salseCount,jdbcType = DOUBLE}
+            </if>
+            <if test="profit != null">
+                and profit = #{profit,jdbcType = VARCHAR}
+            </if>
+        </where>
+    </sql>
+    <select id="getSalseDayAccount" parameterType="java.util.Map"
+            resultType="org.supermarketdiscount.entity.SalseDayAccount">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM salse_day_account
+        <include refid="daynamicWhere"/>
+    </select>
+    <insert id="add" parameterType="org.supermarketdiscount.entity.SalseDayAccount">
+        <![CDATA[
+                insert into salse_day_account(
+                    accountid,
+                    pruchaseDate,
+                    commodityid,
+                    salseCount,
+                    prifit
+                ) values(
+                    #{accountid,jdbcType = INTEGER},
+                    #{pruchaseDate,jdbcType = TIMESTAMP},
+                    #{commodityid,jdbcType = INTEGER},
+                    #{salseCount,jdbcType = DOUBLE},
+                    #{prifit,jdbcType = INTEGER}
+                );
+        ]]>
+    </insert>
+
+    <update id="update" parameterType="org.supermarketdiscount.entity.SalseDayAccount">
+        <![CDATA[
+            update salse_day_account set
+                salseCount =  #{salseCount,jdbcType = DOUBLE},
+                prifit =  #{prifit,jdbcType = INTEGER}
+            where
+                pruchaseDate = #{pruchaseDate,jdbcType = TIMESTAMP}
+            AND
+                commodityid = #{commodityid,jdbcType = INTEGER};
+        ]]>
+    </update>
+    <delete id="del" parameterType="org.supermarketdiscount.entity.SalseDayAccount">
+        <![CDATA[
+            delete from salse_day_account where
+                 pruchaseDate = #{pruchaseDate,jdbcType = TIMESTAMP}
+            AND
+                commodityid = #{commodityid,jdbcType = INTEGER};
+        ]]>
+    </delete>
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.supermarketdiscount.dao.ProductionOrientationMapper">
+    <cache/>
+    <!--private Integer orientationid;-->
+    <!--private String orientationDescribtion-->
+    <sql id="commonConlumns">
+                orientationid as orientationid,
+                orientationDescribtion as orientationDescribtion
+        </sql>
+    <sql id="daynamicWhere">
+        <where>
+            <if test="orientationid != null">
+                and orientationid = #{orientationid,jdbcType = INTEGER}
+            </if>
+            <if test="orientationDescribtion != null">
+                and orientationDescribtion = #{orientationDescribtion,jdbcType = VARCHAR}
+            </if>
+        </where>
+    </sql>
+    <select id="getProductionOrientationList" parameterType="java.util.Map"
+            resultType="org.supermarketdiscount.entity.ProductionOrientation">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM productionorientation
+        <include refid="daynamicWhere"/>
+    </select>
+
+    <select id="getProductionOrientation" parameterType="java.util.Map"
+            resultType="org.supermarketdiscount.entity.ProductionOrientation">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM productionorientation
+        <include refid="daynamicWhere"/>
+    </select>
+
+    <insert id="add" parameterType="org.supermarketdiscount.entity.ProductionOrientation">
+                <![CDATA[
+
+                insert into productionorientation(
+                    orientationid,
+                    orientationDescribtion
+                ) values(
+                    #{orientationid,jdbcType = INTEGER},
+                    #{orientationDescribtion,jdbcType = VARCHAR}
+                );
+
+        ]]>
+        </insert>
+
+    <update id="update" parameterType="org.supermarketdiscount.entity.ProductionOrientation">
+                <![CDATA[
+
+                        update productionorientation set
+                            orientationDescribtion =   #{orientationDescribtion,jdbcType = VARCHAR}
+                        where
+                        orientationid =  #{orientationid,jdbcType = INTEGER};
+
+        ]]>
+        </update>
+    <delete id="del" parameterType="org.supermarketdiscount.entity.ProductionOrientation">
+                <![CDATA[
+
+                        delete from productionorientation where
+                            orientationid =  #{orientationid,jdbcType = INTEGER};
+
+        ]]>
+        </delete>
+</mapper>

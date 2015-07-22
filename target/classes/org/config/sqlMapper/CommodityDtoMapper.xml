@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.supermarketdiscount.dao.CommodityDtoMapper">
+    <cache />
+    <sql id="detailCommonConlumns">
+        t1.commodityid as commodityid,
+        t1.encode as encode,
+        t1.commodityName as commodityName,
+        t1.qualification as qualification,
+        t0.brandName as brandName,
+        t1.Manufacture as Manufacture,
+        t2.typeName as typeName,
+        t3.orientationDescribtion as orientationDescribtion,
+        t1.markids as markids,
+        t1.shapeCode as shapeCode,
+        t1.basePrice as basePrice,
+        t1.isquickSale as isquickSale
+    </sql>
+
+    <sql id="simpleCommonColumns">
+        t1.CommodityName as CommodityName,
+        t1.commodityid as commodityid,
+        t1.basePrice as basePrice,
+        t1.isquickSale as isquickSale,
+        t1.Manufacture as Manufacture,
+        t1.qualification as qualification
+    </sql>
+    <sql id="daynamicSimpleWhere">
+        <where>
+            <if test="commodityid != null">
+                and t1.commodityid = #{commodityid,jdbcType = INTEGER}
+            </if>
+            <if test="encode != null">
+                and t1.encode = #{encode,jdbcType = VARCHAR}
+            </if>
+            <if test="commodityName != null">
+                and t1.commodityName = #{commodityName,jdbcType = VARCHAR}
+            </if>
+            <if test="qualification != null">
+                and t1.qualification = #{qualification,jdbcType = VARCHAR}
+            </if>
+            <if test="brandid != null">
+                and t1.brandid = #{brandid,jdbcType = VARCHAR}
+            </if>
+            <if test="manufacture != null">
+                and t1.manufacture = #{manufacture,jdbcType = VARCHAR}
+            </if>
+            <if test="typeid != null">
+                and t1.typeid = #{typeid,jdbcType = VARCHAR}
+            </if>
+            <if test="orientationid != null">
+                and t1.orientationid = #{orientationid,jdbcType = VARCHAR}
+            </if>
+            <if test="shapeCode != null">
+                and t1.shapeCode = #{shapeCode,jdbcType = DOUBLE}
+            </if>
+            <if test="basePrice != null">
+                and t1.basePrice = #{basePrice,jdbcType = DOUBLE}
+            </if>
+            <if test="isquickSale != null">
+                and t1.isquickSale = #{isquickSale,jdbcType = BOOLEAN}
+            </if>
+        </where>
+    </sql>
+    <sql id="daynamicDetailWhere">
+            <if test="commodityid != null">
+                and t1.commodityid = #{commodityid,jdbcType = INTEGER}
+            </if>
+            <if test="encode != null">
+                and t1.encode = #{encode,jdbcType = VARCHAR}
+            </if>
+            <if test="commodityName != null">
+                and t1.commodityName = #{commodityName,jdbcType = VARCHAR}
+            </if>
+            <if test="qualification != null">
+                and t1.qualification = #{qualification,jdbcType = VARCHAR}
+            </if>
+            <if test="brandid != null">
+                and t1.brandid = #{brandid,jdbcType = VARCHAR}
+            </if>
+            <if test="manufacture != null">
+                and t1.manufacture = #{manufacture,jdbcType = VARCHAR}
+            </if>
+            <if test="typeid != null">
+                and t1.typeid = #{typeid,jdbcType = VARCHAR}
+            </if>
+            <if test="orientationid != null">
+                and t1.orientationid = #{orientationid,jdbcType = VARCHAR}
+            </if>
+            <if test="markids != null">
+                and t1.markids = #{markids,jdbcType = VARCHAR}
+            </if>
+            <if test="shapeCode != null">
+                and t1.shapeCode = #{shapeCode,jdbcType = DOUBLE}
+            </if>
+            <if test="basePrice != null">
+                and t1.basePrice = #{basePrice,jdbcType = DOUBLE}
+            </if>
+            <if test="isquickSale != null">
+                and t1.isquickSale = #{isquickSale,jdbcType = BOOLEAN}
+            </if>
+    </sql>
+    <select id="getDetailCommodityDtoList" parameterType="java.util.Map" resultType="org.supermarketdiscount.dto.DetailCommodityDto">
+        SELECT <include refid="detailCommonConlumns"/>
+        FROM brand as t0,commodity as t1,commoditytype as t2,productionorientation as t3 where t1.brandid = t0.brandid
+        and t1.typeid = t2.typeid
+        and t1.orientationid = t3.orientationid
+        <include refid="daynamicDetailWhere"/>
+    </select>
+    <select id="getSimpleCommodityDtoList" parameterType="java.util.Map" resultType="org.supermarketdiscount.dto.SimpleCommodityDto">
+        SELECT <include refid="simpleCommonColumns"/>
+        FROM  commodity as t1
+        <include refid="daynamicSimpleWhere"/>
+    </select>
+</mapper>

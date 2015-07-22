@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.supermarketdiscount.dao.CommodityMapper">
+    <cache/>
+    <sql id="commonConlumns">
+                commodityid as commodityid,
+                encode as encode,
+                commodityName as commodityName,
+                qualification as qualification,
+                brandid as brandid,
+                manufacture as manufacture,
+                typeid as typeid,
+                orientationid as orientationid,
+                markids as markids,
+                isPromotion as isPromotion,
+                shapeCode as shapeCode,
+                basePrice as basePrice,
+                consumeday as consumeday,
+                isquickSale as isquickSale
+        </sql>
+    <sql id="daynamicWhere">
+        <where>
+            <if test="commodityid != null">
+                and commodityid = #{commodityid,jdbcType = INTEGER}
+            </if>
+            <if test="encode != null">
+                and encode = #{encode,jdbcType = VARCHAR}
+            </if>
+            <if test="commodityName != null">
+                and commodityName = #{commodityName,jdbcType = VARCHAR}
+            </if>
+            <if test="qualification != null">
+                and qualification = #{qualification,jdbcType = VARCHAR}
+            </if>
+            <if test="brandid != null">
+                and brandid = #{brandid,jdbcType = INTEGER}
+            </if>
+            <if test="manufacture != null">
+                and manufacture = #{manufacture,jdbcType = VARCHAR}
+            </if>
+            <if test="typeid != null">
+                and typeid = #{typeid,jdbcType = SMALLINT}
+            </if>
+            <if test="orientationid != null">
+                and orientationid = #{orientationid,jdbcType = SMALLINT}
+            </if>
+            <if test="markids != null">
+                and markids = #{markids,jdbcType = BLOB}
+            </if>
+            <if test="isPromotion != null">
+                and isPromotion = #{isPromotion,jdbcType = BOOLEAN}
+            </if>
+            <if test="shapeCode != null">
+                and shapeCode = #{shapeCode,jdbcType = VARCHAR}
+            </if>
+            <if test="basePrice != null">
+                and basePrice = #{basePrice,jdbcType = DOUBLE}
+            </if>
+            <if test="consumeday != null">
+                and consumeday = #{consumeday,jdbcType = DOUBLE}
+            </if>
+            <if test="isquickSale != null">
+                and isquickSale = #{isquickSale,jdbcType = BOOLEAN}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getCommodityList" parameterType="java.util.Map" resultType="org.supermarketdiscount.entity.Commodity">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM commodity
+        <include refid="daynamicWhere"/>
+    </select>
+
+    <select id="getCommodity" parameterType="java.util.Map" resultType="org.supermarketdiscount.entity.Commodity">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM commodity
+        <include refid="daynamicWhere"/>
+    </select>
+
+    <select id="getMaxUuid" resultType="long">
+        select max(commodityid)+1 from commodity;
+    </select>
+    <insert id="add" parameterType="org.supermarketdiscount.entity.Commodity"  useGeneratedKeys="true" keyProperty="commodityid">
+                <![CDATA[
+
+                insert into commodity(
+                encode,
+                commodityname,
+                qualification,
+                brandid,
+                manufacture,
+                typeid,
+                orientationid,
+                markids,
+                isPromotion,
+                shapeCode,
+                basePrice,
+                consumeday,
+                isquickSale
+                ) values(
+                    #{encode,jdbcType = VARCHAR},
+                    #{commodityName,jdbcType = VARCHAR},
+                    #{qualification,jdbcType = VARCHAR},
+                    #{brandid,jdbcType = INTEGER},
+                    #{manufacture,jdbcType = VARCHAR},
+                    #{typeid,jdbcType = SMALLINT},
+                    #{orientationid,jdbcType = SMALLINT},
+                    #{markids,jdbcType = BLOB},
+                    #{isPromotion,jdbcType = BOOLEAN},
+                    #{shapeCode,jdbcType = VARCHAR},
+                    #{basePrice,jdbcType = DOUBLE},
+                    #{consumeday,jdbcType = DOUBLE},
+                    #{isquickSale,jdbcType = BOOLEAN}
+                );
+
+        ]]>
+        </insert>
+
+    <update id="update" parameterType="org.supermarketdiscount.entity.Commodity">
+                <![CDATA[
+
+                        update commodity set
+                            encode = #{encode,jdbcType = VARCHAR},
+                            commodityName = #{commodityName,jdbcType = VARCHAR},
+                            qualification = #{qualification,jdbcType = VARCHAR},
+                            brandid = #{brandid,jdbcType = INTEGER},
+                            manufacture = #{manufacture,jdbcType = VARCHAR},
+                            typeid = #{typeid,jdbcType = SMALLINT},
+                            orientationid = #{orientationid,jdbcType = SMALLINT},
+                            markids = #{markids,jdbcType = BLOB},
+                            isPromotion = #{isPromotion,jdbcType = BOOLEAN},
+                            shapeCode = #{shapeCode,jdbcType = VARCHAR},
+                            basePrice = #{basePrice,jdbcType = DOUBLE},
+                            consumeday = #{consumeday,jdbcType = DOUBLE},
+                            isquickSale = #{isquickSale,jdbcType = BOOLEAN}
+                            WHERE
+                              commodityid = #{commodityid,jdbcType = INTEGER};
+
+        ]]>
+        </update>
+    <delete id="del" parameterType="org.supermarketdiscount.entity.Commodity">
+                <![CDATA[
+
+                        delete from commodity where
+                           commodityid = #{commodityid,jdbcType = INTEGER};
+
+        ]]>
+        </delete>
+</mapper>

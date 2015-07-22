@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.supermarketdiscount.dao.UserAddressMapper">
+    <cache/>
+    <sql id="commonConlumns">
+        addressKey as addressKey,
+        useraddressid as useraddressid,
+        recipientName as recipientName,
+        phoneNumber as phoneNumber,
+        postcode as postcode,
+        userAddress as userAddress
+    </sql>
+    <sql id="daynamicWhere">
+        <where>
+            <if test="addressKey != null">
+                and addressKey = #{addressKey,jdbcType = INTEGER}
+            </if>
+            <if test="useraddressid != null">
+                and useraddressid = #{useraddressid,jdbcType = INTEGER}
+            </if>
+            <if test="recipientName != null">
+                and recipientName = #{recipientName,jdbcType = VARCHAR}
+            </if>
+            <if test="phoneNumber != null">
+                and phoneNumber = #{phoneNumber,jdbcType = VARCHAR}
+            </if>
+            <if test="postcode != null">
+                and postcode = #{postcode,jdbcType = VARCHAR}
+            </if>
+            <if test="userAddress != null">
+                and userAddress = #{userAddress,jdbcType = VARCHAR}
+            </if>
+        </where>
+    </sql>
+    <select id="getUserAddressList" parameterType="java.util.Map"
+            resultType="org.supermarketdiscount.entity.UserAddress">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM useraddress
+        <include refid="daynamicWhere"/>
+    </select>
+
+    <select id="getUserAddress" parameterType="java.util.Map" resultType="org.supermarketdiscount.entity.UserAddress">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM useraddress
+        <include refid="daynamicWhere"/>
+    </select>
+
+    <select id="getMaxUuid" resultType="long">
+        select max(useraddressid)+1 from useraddress;
+    </select>
+
+    <insert id="add" parameterType="org.supermarketdiscount.entity.UserAddress">
+        <![CDATA[
+
+
+                insert into useraddress(
+                    addressKey,
+                    useraddressid,
+                    recipientName,
+                    phoneNumber,
+                    postcode,
+                    userAddress
+                ) values(
+                     #{addressKey,jdbcType = INTEGER},
+                     #{useraddressid,jdbcType = INTEGER},
+                     #{recipientName,jdbcType = VARCHAR},
+                     #{phoneNumber,jdbcType = VARCHAR},
+                     #{postcode,jdbcType = VARCHAR},
+                     #{userAddress,jdbcType = VARCHAR}
+                );
+
+
+        ]]>
+    </insert>
+
+    <update id="update" parameterType="org.supermarketdiscount.entity.UserAddress">
+        <![CDATA[
+                        update useraddress set
+                            useraddressid = #{useraddressid,jdbcType = INTEGER},
+                            userAddress = #{userAddress,jdbcType = VARCHAR},
+                            recipientName = #{recipientName,jdbcType = VARCHAR},
+                            postcode = #{postcode,jdbcType = VARCHAR},
+                            phoneNumber = #{phoneNumber,jdbcType = VARCHAR}
+                        where
+                             addressKey = #{addressKey,jdbcType = INTEGER};
+
+
+        ]]>
+    </update>
+    <delete id="del" parameterType="org.supermarketdiscount.entity.UserAddress">
+        <![CDATA[
+
+
+                        delete from useraddress where
+                             addressKey = #{addressKey,jdbcType = INTEGER};
+
+
+        ]]>
+    </delete>
+</mapper>

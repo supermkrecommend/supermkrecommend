@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.supermarketdiscount.dao.AdminMapper">
+    <cache/>
+    <sql id="commonConlumns">
+            username as username,
+            password as password
+        </sql>
+    <sql id="daynamicWhere">
+        <where>
+            <if test="username != null">
+                and username = #{username,jdbcType = VARCHAR}
+            </if>
+            <if test="password != null">
+                and password = #{password,jdbcType = VARCHAR}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="add" parameterType="org.supermarketdiscount.entity.Admin">
+        <![CDATA[
+
+                insert into admin(
+                username,
+                password
+                ) values(
+                     #{username,jdbcType = VARCHAR},
+                     #{password,jdbcType = VARCHAR}
+                );
+
+        ]]>
+    </insert>
+
+    <select id="getAdmin" parameterType="java.util.Map" resultType="org.supermarketdiscount.entity.Admin">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM admin
+        <include refid="daynamicWhere"/>
+    </select>
+
+    <select id="getAdminByName" parameterType="java.lang.String" resultType="org.supermarketdiscount.entity.Admin">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM admin WHERE username = #{username,jdbcType = VARCHAR};
+    </select>
+</mapper>

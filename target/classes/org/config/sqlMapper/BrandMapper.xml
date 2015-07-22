@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.supermarketdiscount.dao.BrandMapper">
+    <cache/>
+    <sql id="commonConlumns">
+            brandid as brandid,
+            brandName as brandName
+        </sql>
+    <sql id="daynamicWhere">
+        <where>
+            <if test="brandid != null">
+                and brandid = #{brandid,jdbcType = INTEGER}
+            </if>
+            <if test="brandName != null">
+                and brandName = #{brandName,jdbcType = VARCHAR}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getBrandList" parameterType="java.util.Map" resultType="org.supermarketdiscount.entity.Brand">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM brand
+        <include refid="daynamicWhere"/>
+    </select>
+
+    <select id="getBrand" parameterType="java.util.Map" resultType="org.supermarketdiscount.entity.Brand">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM brand
+        <include refid="daynamicWhere"/>
+    </select>
+
+    <insert id="add" parameterType="org.supermarketdiscount.entity.Brand">
+                <![CDATA[
+
+                insert into brand(
+                    brandid,
+                    brandName
+                ) values(
+                    #{brandid,jdbcType = INTEGER},
+                    #{brandName,jdbcType = VARCHAR}
+                );
+
+        ]]>
+        </insert>
+
+    <update id="update" parameterType="org.supermarketdiscount.entity.Brand">
+                <![CDATA[
+
+                        update brand set
+                            brandName =   #{brandName,jdbcType = VARCHAR}
+                        where
+                        brandid =  #{brandid,jdbcType = INTEGER};
+
+        ]]>
+        </update>
+    <delete id="del" parameterType="org.supermarketdiscount.entity.Brand">
+                <![CDATA[
+
+                        delete from brand where
+                            brandid =  #{brandid,jdbcType = INTEGER};
+
+        ]]>
+        </delete>
+</mapper>

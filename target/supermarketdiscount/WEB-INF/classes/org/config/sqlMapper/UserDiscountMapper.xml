@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.supermarketdiscount.dao.UserDiscountMapper">
+    <cache/>
+    <sql id="commonConlumns">
+                a.userid as userid,
+                a.commodityid as commodityid,
+                a.typeid as typeid,
+                a.promotionPrice as promotionPrice,
+                a.promotionstandard as promotionstandard,
+                a.nextpruchasetime as nextpruchasetime,
+                a.totalcount as totalcount,
+                a.consumeday as consumeday,
+                a.salseCount as salseCount
+        </sql>
+    <sql id="daynamicWhere">
+        <where>
+            <if test="userid != null">
+                and userid = #{userid,jdbcType = INTEGER}
+            </if>
+            <if test="commodityid != null">
+                and commodityid = #{commodityid,jdbcType = INTEGER}
+            </if>
+            <if test="typeid != null">
+                and typeid = #{typeid,jdbcType = INTEGER}
+            </if>
+            <if test="promotionPrice != null">
+                and promotionPrice = #{promotionPrice,jdbcType = DOUBLE}
+            </if>
+            <if test="promotionstandard != null">
+                and promotionstandard = #{promotionstandard,jdbcType = SMALLINT}
+            </if>
+            <if test="nextpruchasetime != null">
+                and nextpruchasetime = #{nextpruchasetime,jdbcType = TIMESTAMP}
+            </if>
+            <if test="totalcount != null">
+                and totalcount = #{totalcount,jdbcType = DOUBLE}
+            </if>
+            <if test="consumeday != null">
+                and consumeday = #{consumeday,jdbcType = DOUBLE}
+            </if>
+            <if test="salseCount != null">
+                and salseCount = #{salseCount,jdbcType = SMALLINT}
+            </if>
+        </where>
+    </sql>
+    <sql id="delWhere">
+        <where>
+            <if test="userid != null">
+                and userid = #{userid,jdbcType = INTEGER}
+            </if>
+            <if test="commodityid != null">
+                and commodityid = #{commodityid,jdbcType = INTEGER}
+            </if>
+        </where>
+    </sql>
+    <select id="getUserDiscountList" parameterType="java.util.Map"
+            resultType="org.supermarketdiscount.entity.UserDiscount">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM userdiscount a
+        <include refid="daynamicWhere"/>
+    </select>
+
+    <select id="getforecastUserDiscount" parameterType="java.util.Map"
+            resultType="org.supermarketdiscount.entity.UserDiscount">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM userdiscount a where
+            nextpruchasetime = #{forecastday,jdbcType = TIMESTAMP}
+            <!--year(#{forecastday,jdbcType = TIMESTAMP}) = year(nextpruchasetime)-->
+            <!--and month(#{forecastday,jdbcType = TIMESTAMP}) = month(nextpruchasetime)-->
+            <!--and day(#{forecastday,jdbcType = TIMESTAMP}) = day(nextpruchasetime)-->
+        order by userid;
+    </select>
+
+    <select id="getUserDiscount" parameterType="java.util.Map" resultType="org.supermarketdiscount.entity.UserDiscount">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM userdiscount a
+        <include refid="daynamicWhere"/>
+    </select>
+
+    <select id="getMessageUserDiscount" parameterType="java.util.Map"
+            resultType="org.supermarketdiscount.entity.UserDiscount">
+        SELECT
+        <include refid="commonConlumns"/>
+        from userdiscount as a inner join discountstandard as b
+        on a.commodityid = b.commodityid and a.promotionstandard = b.promotionstandard
+        where (b.maxcount > a.salsecount and a.salsecount > b.maxcount- b.alteramount)
+        or (b.mincount > a.salsecount and a.salsecount > b.mincount - b.alteramount)
+        and a.commodityid in
+        (select d.commodityid from discountcalculatetime d
+        where datediff( #{date,jdbcType = TIMESTAMP}, d.lastdate) = d.spacetime - d.alertaheadtime)
+        order by a.userid;
+
+    </select>
+
+    <insert id="add" parameterType="org.supermarketdiscount.entity.UserDiscount">
+                <![CDATA[
+                insert into userdiscount(
+                userid,
+                commodityid,
+                typeid,
+                promotionPrice,
+                promotionstandard,
+                nextpruchasetime,
+                totalcount,
+                consumeday,
+                salseCount
+                ) values(
+             #{userid,jdbcType = INTEGER} ,
+             #{commodityid,jdbcType = INTEGER},
+             #{typeid,jdbcType = INTEGER},
+             #{promotionPrice,jdbcType = DOUBLE},
+             #{promotionstandard,jdbcType = SMALLINT},
+             #{nextpruchasetime,jdbcType = TIMESTAMP},
+             #{totalcount,jdbcType = DOUBLE},
+             #{consumeday,jdbcType = DOUBLE},
+             #{salseCount,jdbcType = SMALLINT}
+                );
+        ]]>
+        </insert>
+
+    <update id="update" parameterType="org.supermarketdiscount.entity.UserDiscount">
+        <![CDATA[
+          update userdiscount set
+                typeid = #{typeid,jdbcType = INTEGER},
+                promotionPrice = #{promotionPrice,jdbcType = DOUBLE},
+                promotionstandard = #{promotionstandard,jdbcType = SMALLINT},
+                salseCount = #{salseCount,jdbcType = SMALLINT},
+                nextpruchasetime = #{nextpruchasetime,jdbcType = TIMESTAMP},
+                totalcount =  #{totalcount,jdbcType = DOUBLE},
+                consumeday =  #{consumeday,jdbcType = DOUBLE}
+          where
+                userid = #{userid,jdbcType = INTEGER} AND
+                commodityid = #{commodityid,jdbcType = INTEGER};
+        ]]>
+        </update>
+    <delete id="del" parameterType="org.supermarketdiscount.entity.UserDiscount">
+            delete from userdiscount
+                 <include refid="delWhere"/>
+    </delete>
+</mapper>

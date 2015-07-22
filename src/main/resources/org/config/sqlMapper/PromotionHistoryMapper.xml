@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.supermarketdiscount.dao.PromotionHistoryMapper">
+    <cache/>
+    <sql id="commonConlumns">
+        historyid as historyid,
+        userid as userid,
+        commodityid as commodityid,
+        sendDate as sendDate,
+        backFlag as backFlag,
+        forecastDay as forecastDay,
+        backAmount as backAmount,
+        promotionType as promotionType
+    </sql>
+    <sql id="daynamicWhere">
+        <where>
+            <if test="historyid != null">
+                and historyid = #{historyid,historyid = INTEGER}
+            </if>
+            <if test="userid != null">
+                and userid = #{userid,jdbcType = INTEGER}
+            </if>
+            <if test="commodityid != null">
+                and commodityid = #{commodityid,jdbcType = INTEGER}
+            </if>
+            <if test="sendDate != null">
+                and sendDate = #{sendDate,jdbcType = TIMESTAMP}
+            </if>
+            <if test="backFlag != null">
+                and backFlag = #{backFlag,jdbcType = BOOLEAN}
+            </if>
+            <if test="forecastDay != null">
+                and forecastDay = #{forecastDay,jdbcType = SMALLINT}
+            </if>
+            <if test="backAmount != null">
+                and backAmount = #{backAmount,jdbcType = SMALLINT}
+            </if>
+            <if test="promotionType != null">
+                and promotionType = #{promotionType,jdbcType = SMALLINT}
+            </if>
+        </where>
+    </sql>
+    <select id="getPromotionHistory" parameterType="java.util.Map"
+            resultType="org.supermarketdiscount.entity.PromotionHistory">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM productionorientation
+        <include refid="daynamicWhere"/>
+    </select>
+
+    <insert id="add" parameterType="org.supermarketdiscount.entity.PromotionHistory">
+        <![CDATA[
+          insert into promotion_message_history(
+                historyid,
+                userid,
+                commodityid,
+                sendDate,
+                backFlag,
+                forecastDay,
+                backAmount,
+                promotionType
+        ) values(
+                 #{historyid,jdbcType = INTEGER},
+                 #{userid,jdbcType = INTEGER},
+                 #{commodityid,jdbcType = INTEGER},
+                 #{senddate,jdbcType = TIMESTAMP},
+                 #{backFlag,jdbcType = BOOLEAN},
+                 #{forecastDay,jdbcType = SMALLINT},
+                 #{backAmount,jdbcType = SMALLINT},
+                 #{promotionType,jdbcType = SMALLINT}
+        );
+        ]]>
+    </insert>
+
+    <update id="update" parameterType="org.supermarketdiscount.entity.PromotionHistory">
+        <![CDATA[
+                update promotion_message_history set
+                    backFlag = #{backFlag,jdbcType = BOOLEAN},
+                    backAmount = #{backAmount,jdbcType = SMALLINT},
+                    forecastDay = #{forecastDay,jdbcType = SMALLINT}
+                where
+                    historyid =  #{historyid,jdbcType = INTEGER}
+        ]]>
+    </update>
+    <delete id="del" parameterType="org.supermarketdiscount.entity.PromotionHistory">
+        <![CDATA[
+                delete from promotion_message_history where
+                   historyid =  #{historyid,jdbcType = INTEGER}
+        ]]>
+    </delete>
+</mapper>

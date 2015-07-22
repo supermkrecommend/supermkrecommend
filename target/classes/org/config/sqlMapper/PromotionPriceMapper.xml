@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.supermarketdiscount.dao.PromotionPriceMapper">
+    <cache/>
+    <sql id="commonConlumns">
+                promotionid as promotionid,
+                commodityid as commodityid,
+                salse as salse,
+                salseStartDate as salseStartDate,
+                salseEndDate as salseEndDate
+        </sql>
+    <sql id="daynamicWhere">
+        <where>
+            <if test="promotionid != null">
+                and promotionid = #{promotionid,jdbcType = INTEGER}
+            </if>
+            <if test="commodityid != null">
+                and commodityid = #{commodityid,jdbcType = INTEGER}
+            </if>
+            <if test="salse != null">
+                and salse = #{salse,jdbcType = DOUBLE}
+            </if>
+            <if test="salseStartDate != null">
+                and salseStartDate = #{salseStartDate,jdbcType = TIMESTAMP}
+            </if>
+            <if test="salseEndDate != null">
+                and salseEndDate = #{salseEndDate,jdbcType = TIMESTAMP}
+            </if>
+        </where>
+    </sql>
+    <select id="getPromotionPriceList" parameterType="java.util.Map"
+            resultType="org.supermarketdiscount.entity.PromotionPrice">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM promotionprice
+        <include refid="daynamicWhere"/>
+    </select>
+
+    <select id="getPromotionPrice" parameterType="java.util.Map"
+            resultType="org.supermarketdiscount.entity.PromotionPrice">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM promotionprice
+        <include refid="daynamicWhere"/>
+    </select>
+
+    <insert id="add" parameterType="org.supermarketdiscount.entity.PromotionPrice">
+                <![CDATA[
+
+
+                insert into promotionprice(
+                    promotionid,
+                    commodityid,
+                    salse,
+                    salseStartDate,
+                    salseEndDate
+                ) values(
+                    #{promotionid,jdbcType = INTEGER},
+                    #{commodityid,jdbcType = INTEGER},
+                    #{salse,jdbcType = DOUBLE},
+                    #{salseStartDate,jdbcType = TIMESTAMP},
+                    #{salseEndDate,jdbcType = TIMESTAMP}
+                );
+
+
+        ]]>
+        </insert>
+
+    <update id="update" parameterType="org.supermarketdiscount.entity.PromotionPrice">
+                <![CDATA[
+
+
+                        update promotionprice set
+                             commodityid = #{commodityid,jdbcType = INTEGER},
+                             salse = #{salse,jdbcType = DOUBLE},
+                             salseStartDate = #{salseStartDate,jdbcType = TIMESTAMP},
+                             salseEndDate = #{salseEndDate,jdbcType = TIMESTAMP}
+                        where
+                              promotionid = #{promotionid,jdbcType = INTEGER};
+
+
+        ]]>
+        </update>
+    <delete id="del" parameterType="org.supermarketdiscount.entity.PromotionPrice">
+                <![CDATA[
+
+
+                        delete from promotionprice where
+                            promotionid = #{promotionid,jdbcType = INTEGER};
+
+
+        ]]>
+        </delete>
+    <delete id="delByCommodityid" parameterType="org.supermarketdiscount.entity.PromotionPrice">
+        <![CDATA[
+
+
+                        delete from promotionprice where
+                            commodityid = #{commodityid,jdbcType = INTEGER};
+
+
+        ]]>
+    </delete>
+</mapper>

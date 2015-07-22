@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.supermarketdiscount.dao.DiscountCalculateTimeMapper">
+    <cache/>
+    <sql id="commonConlumns">
+        commodityid as commodityid,
+        lastDate as lastDate,
+        spaceTime as spaceTime,
+        alertaheadtime as alertAheadTime
+    </sql>
+    <sql id="daynamicWhere">
+        <where>
+            <if test="commodityid != null">
+                and commodityid = #{commodityid,jdbcType = INTEGER}
+            </if>
+            <if test="lastDate != null">
+                and lastDate = #{lastDate,jdbcType = TIMESTAMP}
+            </if>
+            <if test="spaceTime != null">
+                and spaceTime = #{spaceTime,jdbcType = SMALLINT}
+            </if>
+            <if test="alertAheadTime != null">
+                and alertaheadtime = #{alertAheadTime,jdbcType = SMALLINT}
+            </if>
+        </where>
+    </sql>
+    <select id="getDiscountCalculateTimeList" parameterType="java.util.Map"
+            resultType="org.supermarketdiscount.entity.DiscountCalculateTime">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM discountcalculatetime
+        <include refid="daynamicWhere"/>
+    </select>
+
+    <select id="getDiscountCalculateTime" parameterType="java.util.Map"
+            resultType="org.supermarketdiscount.entity.DiscountCalculateTime">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM discountcalculatetime
+        <include refid="daynamicWhere"/>
+    </select>
+
+    <select id="getCalculateCommodityList" parameterType="java.util.Map"
+            resultType="org.supermarketdiscount.entity.DiscountCalculateTime">
+        SELECT
+        <include refid="commonConlumns"/>
+        FROM discountcalculatetime
+        where
+        <![CDATA[
+        datediff( #{date,jdbcType = TIMESTAMP}, lastDate) >= spacetime;
+        ]]>
+    </select>
+
+    <insert id="add" parameterType="org.supermarketdiscount.entity.DiscountCalculateTime">
+        <![CDATA[
+
+                insert into discountcalculatetime(
+                    commodityid,
+                    lastDate,
+                    spaceTime,
+                    alertaheadtime
+                ) values(
+                     #{commodityid,jdbcType = INTEGER},
+                     #{lastDate,jdbcType = TIMESTAMP},
+                     #{spaceTime,jdbcType = SMALLINT},
+                     #{alertAheadTime,jdbcType = SMALLINT}
+                );
+
+        ]]>
+    </insert>
+
+    <update id="update" parameterType="org.supermarketdiscount.entity.DiscountCalculateTime">
+        <![CDATA[
+
+                update discountcalculatetime set
+                   lastDate = #{lastDate,jdbcType = TIMESTAMP},
+                   spaceTime = #{spaceTime,jdbcType = SMALLINT},
+                   alertaheadtime = #{alertAheadTime,jdbcType = SMALLINT}
+                where
+                   commodityid = #{commodityid,jdbcType = INTEGER};
+
+        ]]>
+    </update>
+    <delete id="del" parameterType="org.supermarketdiscount.entity.DiscountCalculateTime">
+        <![CDATA[
+                delete from discountcalculatetime where
+                   commodityid = #{commodityid,jdbcType = INTEGER};
+        ]]>
+    </delete>
+
+</mapper>

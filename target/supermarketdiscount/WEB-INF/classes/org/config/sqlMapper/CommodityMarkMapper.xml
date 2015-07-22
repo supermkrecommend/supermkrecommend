@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.supermarketdiscount.dao.CommodityMarkMapper">
+        <cache />
+        <sql id="commonConlumns">
+                markid as markid,
+                describtion as describtion
+        </sql>
+        <sql id="daynamicWhere">
+                <where>
+                        <if test="markid != null">
+                                and markid = #{markid,jdbcType = INTEGER}
+                        </if>
+                        <if test="describtion != null">
+                                and describtion = #{describtion,jdbcType = VARCHAR}
+                        </if>
+                </where>
+        </sql>
+        <select id="getCommodityMarkList" parameterType="java.util.Map" resultType="org.supermarketdiscount.entity.CommodityMark">
+                SELECT <include refid="commonConlumns"/>
+                FROM commoditymark
+                <include refid="daynamicWhere"/>
+        </select>
+        <select id="getCommoditymarkListByIds" parameterType="java.util.Map" resultType="org.supermarketdiscount.entity.CommodityMark">
+                SELECT <include refid="commonConlumns"/>
+                FROM commoditymark
+                where markid in
+                <foreach collection="ids" item="poiId" index="index"
+                 open="(" close=")" separator=",">
+                 #{poiId}
+                 </foreach>
+        </select>
+        <insert id="add" parameterType="org.supermarketdiscount.entity.CommodityMark" >
+                <![CDATA[
+                insert into commoditymark(
+                 markid,
+                 describtion
+                ) values(
+                    #{markid,jdbcType = INTEGER},
+                    #{describtion,jdbcType = VARCHAR}
+                );
+                ]]>
+        </insert>
+        <update id="update" parameterType="org.supermarketdiscount.entity.CommodityMark">
+                <![CDATA[
+                        update commoditymark set
+                            describtion =   #{describtion,jdbcType = VARCHAR}
+                        where
+                             markid =  #{markid,jdbcType = INTEGER};
+                    ]]>
+        </update>
+        <delete id="del" parameterType="org.supermarketdiscount.entity.CommodityMark">
+                <![CDATA[
+                        delete from commoditymark where
+                            markid =  #{markid,jdbcType = INTEGER};
+                    ]]>
+        </delete>
+</mapper>

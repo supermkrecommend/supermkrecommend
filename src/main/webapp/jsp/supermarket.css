@@ -1,0 +1,29 @@
+/** Set the default padding and margin for block level elements to be zero everywhere. */
+body, div, dd, dt, dl, img, tr, td, h1, h2, h3, h4, h5, form, hr, fieldset {
+    margin: 2px;
+    padding: 2px;
+}
+
+/** Styles that affect the layout of the major chunks of the page. */
+
+.table {
+    border-collapse: collapse;
+    border: none;
+}
+
+/*.th*/
+/*{*/
+/*border: solid #000 1px;*/
+/*}*/
+.td {
+    border: solid #000 1px;
+}
+
+#login {
+    margin: 0px auto;
+}
+
+div.buttons {
+    margin: 7px 0px 7px 0px;
+    text-align: left;
+}
