@@ -41,9 +41,9 @@ public class BrandTest extends AbstractJUnit4SpringContextTests {
         time[2] = System.currentTimeMillis();
         PageInfo page = new PageInfo(list);
         time[3] = System.currentTimeMillis();
-        for(Brand brand :list){
-            System.out.println(brand.toString());
-        }
+    //    for(Brand brand :list){
+    //        System.out.println(brand.toString());
+  //      }
 
         for(int i = 0 ; i < 3 ; i ++){
             System.out.println(time[i+1] - time[i]);
